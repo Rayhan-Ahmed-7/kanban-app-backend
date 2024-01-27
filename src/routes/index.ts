@@ -3,7 +3,7 @@ import authRoutes from "./authRoutes";
 
 class Routes {
     constructor(app: Application) {
-        app.use("/api/auth/", authRoutes);
+        app.use("/api/auth", authRoutes);
     }
 }
 

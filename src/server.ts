@@ -14,8 +14,8 @@ class Server {
             origin: "http://localhost:5173"
         }
 
+        app.use(cors());
         app.use(express.json());
-        app.use(cors(corsOptions));
         app.use(express.urlencoded({ extended: false }));
     }
 }
