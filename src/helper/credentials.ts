@@ -5,6 +5,7 @@ dotenv.config({
 class AppCredentials{
     static PORT = process.env.PORT || 8000;
     static DB_URL = process.env.DB_URL || '';
+    static JWT_SECRET = process.env.JWT_SECRET || '';
 }
 
 export default AppCredentials; 
