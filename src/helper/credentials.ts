@@ -4,6 +4,7 @@ dotenv.config({
 })
 class AppCredentials{
     static PORT = process.env.PORT || 8000;
+    static DB_URL = process.env.DB_URL || '';
 }
 
 export default AppCredentials; 

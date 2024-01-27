@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import cors, { CorsOptions } from "cors";
 import Routes from "./routes";
 import cookieParser from "cookie-parser";
+import db from "./config/db";
 
 
 class Server {
@@ -20,6 +21,8 @@ class Server {
         app.use(express.json());
         app.use(cookieParser());
         app.use(express.urlencoded({ extended: false }));
+
+        db.connect();
     }
 }
 
