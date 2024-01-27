@@ -1,13 +1,13 @@
 import expreess, { Request, Response } from "express";
-import dotenv from "dotenv";
 import Server from "./server";
+import AppCredentials from "./helper/credentials";
 
-dotenv.config()
+
 
 
 const app = expreess();
 const server: Server = new Server(app);
-const port = process.env.PORT || 8080;
+const port = AppCredentials.PORT;
 
 app.get("/", (req: Request, res: Response) => {
     res.send("hello world")
