@@ -71,6 +71,23 @@ class AuthController {
             })
         }
     }
+    async getUsers(req: Request, res: Response) {
+        try {
+            const users = await User.find();
+
+            res.status(StatusCode.success).json({
+                message: "user  list rettrived.",
+                data: users
+            });
+
+        } catch (err) {
+            res.status(StatusCode.serverError).json({
+                message: "failed to load user list",
+                data: null,
+                error: err
+            })
+        }
+    }
 }
 
 export default AuthController;
