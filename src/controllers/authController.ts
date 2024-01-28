@@ -31,7 +31,7 @@ class AuthController {
                 password: password
             });
             if (user) {
-                generateToken(res, user);
+                // generateToken(res, user);
                 res.status(StatusCode.created).json({
                     message: "user registered successfuly.",
                     data: user,
