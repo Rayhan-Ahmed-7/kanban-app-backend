@@ -6,14 +6,34 @@ import { generateToken } from "../utils/auth";
 class AuthController {
     async login(req: Request, res: Response) {
         try {
-            res.status(StatusCode.created).json({
-                message: "created",
-                data: req.body
-            })
+            const { username, password } = req.body;
+            const user = await User.findOne({ username: username });
+            if (!user) {
+                res.status(StatusCode.error).json({
+                    message: "wrong username!"
+                });
+                return;
+            }
+            if (user && (await user.comparePassword(password))) {
+                res.status(StatusCode.success).json({
+                    message: "login successfuly.",
+                    data: {
+                        id: user._id,
+                        username: user.username
+                    },
+                });
+            } else {
+                res.status(StatusCode.error).json({
+                    message: "wrong password"
+                })
+            }
+
         } catch (err) {
+            console.log(err)
             res.status(StatusCode.serverError).json({
                 message: "failed",
-                data: null
+                data: null,
+                error: err
             })
         }
     }
@@ -24,25 +44,30 @@ class AuthController {
             if (userExists) {
                 res.status(StatusCode.error).json({
                     message: "user already exists with this name!"
-                })
+                });
+                return;
             }
             const user = await User.create({
                 username: username,
                 password: password
             });
             if (user) {
-                // generateToken(res, user);
+                generateToken(res, { username: user.username });
                 res.status(StatusCode.created).json({
                     message: "user registered successfuly.",
-                    data: user,
+                    data: {
+                        id: user._id,
+                        username: user.username
+                    },
                 });
             }
 
         } catch (err) {
+            console.log(err)
             res.status(StatusCode.serverError).json({
                 message: "failed",
                 data: null,
-                error:err
+                error: err
             })
         }
     }

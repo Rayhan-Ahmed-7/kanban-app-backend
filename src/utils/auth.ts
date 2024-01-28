@@ -1,10 +1,9 @@
 import { Response } from "express";
-import { IUser } from "../types/user";
 import jwt from "jsonwebtoken"
 import AppCredentials from "../helper/credentials";
 import { ACCESS_TOKEN } from "../constants/constant";
 class JwtService {
-    generateToken(res: Response, data: IUser) {
+    generateToken(res: Response, data: { username: string, }) {
         const token = jwt.sign(data, AppCredentials.JWT_SECRET, {
             expiresIn: "1h"
         });
