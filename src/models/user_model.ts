@@ -7,7 +7,7 @@ import { schemaOptions } from "./modelOptions";
 
 const userSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: false }
+    password: { type: String, required: true, }
 }, schemaOptions);
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
@@ -17,8 +17,8 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-userSchema.methods.comparePassword = async function (enteredPassword: string) {
-    return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.comparePassword = async function (password: string) {
+    return await bcrypt.compare(password, this.password);
 };
 
 const User = model<IUser>("User", userSchema);
