@@ -1,7 +1,9 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from "express";
 import { StatusCode } from "../types/util";
 import User from "../models/user_model";
 import { generateToken } from "../utils/auth";
+import AppCredentials from '../helper/credentials';
 
 class AuthController {
     async login(req: Request, res: Response) {
@@ -84,6 +86,39 @@ class AuthController {
         } catch (err) {
             res.status(StatusCode.serverError).json({
                 message: "failed to load user list",
+                data: null,
+                error: err
+            })
+        }
+    }
+    async verifyToken(req: Request, res: Response) {
+        try {
+            const token = req.cookies.jwt;
+            if (!token) {
+                return res.status(StatusCode.unAuthenticated).json({
+                    message: "token not found."
+                })
+            }
+            const decoded = jwt.verify(token, AppCredentials.JWT_SECRET) as JwtPayload;
+            if (!decoded || !decoded.username) {
+                res.status(StatusCode.unAuthenticated).json({
+                    status: StatusCode.unAuthenticated,
+                    message: "unauthenticated request."
+                });
+                return;
+            }
+            const user = await User.find({ username: decoded.username });
+            if (user) {
+                res.status(StatusCode.success).json({
+                    message: "authenticated.",
+                    data: user
+                });
+                return;
+            }
+
+        } catch (err) {
+            res.status(StatusCode.serverError).json({
+                message: "failed to load user",
                 data: null,
                 error: err
             })
