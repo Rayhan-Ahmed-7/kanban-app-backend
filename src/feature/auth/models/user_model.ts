@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose"
 import bcrypt from "bcryptjs";
-import { IUser } from "../types/user";
-import { schemaOptions } from "./modelOptions";
+import { schemaOptions } from "../../../utils/modelOptions";
+import { IUser } from "../../../types/user";
 
 
 

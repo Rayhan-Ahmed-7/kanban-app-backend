@@ -1,8 +1,6 @@
 import { Router } from "express";
 import AuthController from "../controllers/authController";
-import AuthMiddleware from "../middleware/authMiddleware";
 import { body } from "express-validator";
-import User from "../models/user_model";
 import { validate } from "../validation/authValidation";
 
 class AuthRoutes {
@@ -29,7 +27,6 @@ class AuthRoutes {
         );
         this.router.post("/login", this.controller.login);
         this.router.get("/verify-token", this.controller.verifyToken);
-        this.router.get("/users", AuthMiddleware.authenticate, this.controller.getUsers);
     }
 }
 

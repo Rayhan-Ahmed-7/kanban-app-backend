@@ -1,5 +1,3 @@
-import { Document } from "mongoose"
-import { IUser } from "../types/user"
 
 export const schemaOptions = {
     toJSON: {

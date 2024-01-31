@@ -1,9 +1,9 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from "express";
-import { StatusCode } from "../types/util";
-import User from "../models/user_model";
-import { generateToken } from "../utils/auth";
-import AppCredentials from '../helper/credentials';
+import { StatusCode } from "../../../types/util";
+import { generateToken } from "../../../utils/auth";
+import AppCredentials from '../../../helper/credentials';
+import User from '../models/user_model';
 
 class AuthController {
     async login(req: Request, res: Response) {
@@ -18,6 +18,7 @@ class AuthController {
                 return;
             }
             if (user && (await user.comparePassword(password))) {
+                generateToken(res, { username: user.username });
                 res.status(StatusCode.success).json({
                     message: "login successfuly.",
                     data: {
@@ -55,7 +56,6 @@ class AuthController {
                 password: password
             });
             if (user) {
-                generateToken(res, { username: user.username });
                 res.status(StatusCode.created).json({
                     message: "user registered successfuly.",
                     data: {
@@ -74,23 +74,7 @@ class AuthController {
             })
         }
     }
-    async getUsers(req: Request, res: Response) {
-        try {
-            const users = await User.find();
-
-            res.status(StatusCode.success).json({
-                message: "user  list rettrived.",
-                data: users
-            });
-
-        } catch (err) {
-            res.status(StatusCode.serverError).json({
-                message: "failed to load user list",
-                data: null,
-                error: err
-            })
-        }
-    }
+    
     async verifyToken(req: Request, res: Response) {
         try {
             const token = req.cookies.jwt;

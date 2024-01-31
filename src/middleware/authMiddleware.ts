@@ -2,7 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from "express";
 import { StatusCode } from "../types/util";
 import AppCredentials from '../helper/credentials';
-import User from '../models/user_model';
+import User from '../feature/auth/models/user_model';
 
 class AuthMiddleware {
     async authenticate(req: Request, res: Response, next: NextFunction) {
