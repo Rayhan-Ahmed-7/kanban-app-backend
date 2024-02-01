@@ -4,15 +4,19 @@ import AppCredentials from "../helper/credentials";
 import { ACCESS_TOKEN } from "../constants/constant";
 class JwtService {
     generateToken(res: Response, data: { username: string, }) {
-        const token = jwt.sign(data, AppCredentials.JWT_SECRET, {
+        const access_token = jwt.sign(data, AppCredentials.JWT_SECRET, {
+            expiresIn: "30m"
+        });
+        const refresh_token = jwt.sign(data, AppCredentials.JWT_SECRET, {
             expiresIn: "1h"
         });
-        res.cookie(ACCESS_TOKEN, token, {
+        res.cookie(ACCESS_TOKEN, refresh_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV != "development",
             sameSite: "strict",
             maxAge: 60 * 60 * 1000
-        })
+        });
+        return access_token;
     }
     clearToken(res: Response) {
         res.cookie(ACCESS_TOKEN, "", {

@@ -18,12 +18,13 @@ class AuthController {
                 return;
             }
             if (user && (await user.comparePassword(password))) {
-                generateToken(res, { username: user.username });
+                let accessToken = generateToken(res, { username: user.username });
                 res.status(StatusCode.success).json({
                     message: "login successfuly.",
                     data: {
                         id: user._id,
-                        username: user.username
+                        username: user.username,
+                        access_tokeen:accessToken
                     },
                 });
             } else {

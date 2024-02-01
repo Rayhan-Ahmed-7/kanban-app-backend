@@ -7,7 +7,7 @@ import User from '../feature/auth/models/user_model';
 class AuthMiddleware {
     async authenticate(req: Request, res: Response, next: NextFunction) {
         try {
-            const token = req.cookies.access_token;
+            let token = req.headers.authorization?.split(" ")[1];
             if (!token) {
                 res.status(StatusCode.unAuthenticated).json({
                     status: StatusCode.unAuthenticated,
