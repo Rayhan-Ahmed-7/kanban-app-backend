@@ -9,7 +9,6 @@ class AuthController {
     async login(req: Request, res: Response) {
         try {
             const { username, password } = req.body;
-            console.log(password)
             const user = await User.findOne({ username: username });
             if (!user) {
                 res.status(StatusCode.error).json({
@@ -24,7 +23,7 @@ class AuthController {
                     data: {
                         id: user._id,
                         username: user.username,
-                        access_tokeen:accessToken
+                        access_token:accessToken
                     },
                 });
             } else {
@@ -78,7 +77,7 @@ class AuthController {
     
     async verifyToken(req: Request, res: Response) {
         try {
-            const token = req.cookies.jwt;
+            let token = req.headers.authorization?.split(" ")[1];
             if (!token) {
                 return res.status(StatusCode.unAuthenticated).json({
                     message: "token not found."
@@ -99,6 +98,43 @@ class AuthController {
                     data: user
                 });
                 return;
+            }
+
+        } catch (err) {
+            res.status(StatusCode.serverError).json({
+                message: "failed to load user",
+                data: null,
+                error: err
+            })
+        }
+    }
+    async refreshToken(req: Request, res: Response) {
+        try {
+            let token = req.cookies.access_token;
+            if (!token) {
+                return res.status(StatusCode.unAuthenticated).json({
+                    message: "token not found."
+                })
+            }
+            const decoded = jwt.verify(token, AppCredentials.JWT_SECRET) as JwtPayload;
+            if (!decoded || !decoded.username) {
+                res.status(StatusCode.unAuthenticated).json({
+                    status: StatusCode.unAuthenticated,
+                    message: "unauthenticated request."
+                });
+                return;
+            }
+            const user = await User.findOne({ username: decoded.username });
+            if (user) {
+                let accessToken = generateToken(res, { username: user.username });
+                res.status(StatusCode.success).json({
+                    message: "token refreshed successfuly.",
+                    data: {
+                        id: user._id,
+                        username: user.username,
+                        access_token:accessToken
+                    },
+                });
             }
 
         } catch (err) {
