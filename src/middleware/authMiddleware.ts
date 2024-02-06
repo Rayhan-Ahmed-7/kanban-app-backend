@@ -35,7 +35,6 @@ class AuthMiddleware {
             
             next();
         } catch (err) {
-            console.log(err)
             res.status(StatusCode.unAuthenticated).json({
                 status: StatusCode.unAuthenticated,
                 message: "invalid token."

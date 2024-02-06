@@ -23,7 +23,7 @@ class AuthController {
                     data: {
                         id: user._id,
                         username: user.username,
-                        access_token:accessToken
+                        access_token: accessToken
                     },
                 });
             } else {
@@ -74,7 +74,7 @@ class AuthController {
             })
         }
     }
-    
+
     async verifyToken(req: Request, res: Response) {
         try {
             let token = req.headers.authorization?.split(" ")[1];
@@ -91,18 +91,21 @@ class AuthController {
                 });
                 return;
             }
-            const user = await User.find({ username: decoded.username });
+            const user = await User.findOne({ username: decoded.username });
             if (user) {
                 res.status(StatusCode.success).json({
                     message: "authenticated.",
-                    data: user
+                    data: {
+                        id: user._id,
+                        username: user.username
+                    }
                 });
                 return;
             }
 
         } catch (err) {
-            res.status(StatusCode.serverError).json({
-                message: "failed to load user",
+            res.status(StatusCode.unAuthenticated).json({
+                message: "failed to verify the user",
                 data: null,
                 error: err
             })
@@ -132,7 +135,7 @@ class AuthController {
                     data: {
                         id: user._id,
                         username: user.username,
-                        access_token:accessToken
+                        access_token: accessToken
                     },
                 });
             }
