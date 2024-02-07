@@ -1,3 +1,4 @@
+import { body } from 'express-validator';
 import { Request, Response } from "express";
 import Board from "../models/board_model";
 import { sendResponse } from "../../../helper/global_response";
@@ -16,7 +17,15 @@ class BoardController {
             sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.badRequest })
         }
     }
+    async getBoards(req: Request, res: Response) {
+        try {
+            const boards = await Board.find().sort('-position');
+            sendResponse({ res, message: "successful", data: boards })
+        } catch (error) {
+            sendResponse({ res, statusCode: StatusCode.serverError, error: error  })
+        }
+    }
 }
 
 
-export default new BoardController();
+export default  BoardController;

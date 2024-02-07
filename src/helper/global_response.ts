@@ -10,12 +10,12 @@ interface IResponse {
 }
 export const sendResponse = ({ res, message, statusCode = 200, data, error }: IResponse) => {
     if (data) {
-        res.status(statusCode).send({
+        res.status(statusCode).json({
             message: message,
             data: data,
         })
     } else {
-        res.status(statusCode).send({
+        res.status(statusCode).json({
             message: message,
             error: error
         })
