@@ -75,6 +75,15 @@ class AuthController {
         }
     }
 
+    // async logOut(req: Request, res: Response) {
+    //     try {
+    //         const token = req.headers.authorization?.split(" ")[1]
+    //         jwt.
+    //     } catch (err) {
+    //         console.log(err)
+    //     }
+    // }
+
     async verifyToken(req: Request, res: Response) {
         try {
             let token = req.headers.authorization?.split(" ")[1];
@@ -113,7 +122,7 @@ class AuthController {
     }
     async refreshToken(req: Request, res: Response) {
         try {
-            let token = req.cookies.access_token;
+            let token = req.cookies.refresh_token;
             if (!token) {
                 return res.status(StatusCode.unAuthenticated).json({
                     message: "token not found."
@@ -141,7 +150,7 @@ class AuthController {
             }
 
         } catch (err) {
-            res.status(StatusCode.serverError).json({
+            res.status(StatusCode.unAuthenticated).json({
                 message: "failed to load user",
                 data: null,
                 error: err
