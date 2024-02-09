@@ -28,6 +28,26 @@ class BoardController {
             sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.badRequest })
         }
     }
+    async getBoard(req: Request, res: Response) {
+        try {
+            const { boardId } = req.params;
+            const token = req.headers.authorization?.split(" ")[1];
+            if (!token) {
+                return res.status(StatusCode.unAuthenticated).json({
+                    message: "token not found."
+                })
+            }
+            const decoded = jwt.decode(token) as JwtPayload;
+            const userId = decoded.userId;
+            const board = await Board.findOne({
+                user: userId,
+                _id: boardId
+            });
+            sendResponse({ res, message: 'board retrived successful.', data: board })
+        } catch (error) {
+            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.badRequest })
+        }
+    }
     async getBoards(req: Request, res: Response) {
         try {
             const boards = await Board.find().sort('position');
