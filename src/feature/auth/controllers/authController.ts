@@ -17,7 +17,7 @@ class AuthController {
                 return;
             }
             if (user && (await user.comparePassword(password))) {
-                let accessToken = generateToken(res, { username: user.username });
+                let accessToken = generateToken(res, { userId: user.id, username: user.username });
                 res.status(StatusCode.success).json({
                     message: "login successfuly.",
                     data: {
@@ -138,7 +138,7 @@ class AuthController {
             }
             const user = await User.findOne({ username: decoded.username });
             if (user) {
-                let accessToken = generateToken(res, { username: user.username });
+                let accessToken = generateToken(res, { username: user.username, userId: user.id });
                 res.status(StatusCode.success).json({
                     message: "token refreshed successfuly.",
                     data: {

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import AppCredentials from "../helper/credentials";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants/constant";
 class JwtService {
-    generateToken(res: Response, data: { username: string, }) {
+    generateToken(res: Response, data: { username: string, userId: string }) {
         const access_token = jwt.sign(data, AppCredentials.JWT_SECRET, {
             expiresIn: "1h"
         });
