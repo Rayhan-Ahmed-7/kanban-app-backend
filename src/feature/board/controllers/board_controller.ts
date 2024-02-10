@@ -3,14 +3,15 @@ import { Request, Response } from "express";
 import Board from "../models/board_model";
 import { sendResponse } from "../../../helper/global_response";
 import { StatusCode } from "../../../types/util";
-import AppCredentials from '../../../helper/credentials';
+import Section from '../../section/model/section_model';
+import Task from '../../task/models/task_model';
 
 class BoardController {
     async createBoard(req: Request, res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
             if (!token) {
-                return res.status(StatusCode.unAuthenticated).json({
+                return res.status(StatusCode.UNAUTHORIZED).json({
                     message: "token not found."
                 })
             }
@@ -25,7 +26,7 @@ class BoardController {
             });
             sendResponse({ res, message: 'board creation successful.', data: board })
         } catch (error) {
-            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.badRequest })
+            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
         }
     }
     async getBoard(req: Request, res: Response) {
@@ -33,7 +34,7 @@ class BoardController {
             const { boardId } = req.params;
             const token = req.headers.authorization?.split(" ")[1];
             if (!token) {
-                return res.status(StatusCode.unAuthenticated).json({
+                return res.status(StatusCode.UNAUTHORIZED).json({
                     message: "token not found."
                 })
             }
@@ -43,9 +44,18 @@ class BoardController {
                 user: userId,
                 _id: boardId
             });
+            if (!board) {
+                sendResponse({ res, message: 'board not found', statusCode: StatusCode.BAD_REQUEST, error: {} })
+            }
+            const sections = await Section.find({ board: boardId });
+            for (const section of sections) {
+                const tasks = await Task.find({ section: section.id }).populate('section').sort('position');
+                (section as any)._doc.tasks = tasks;
+            }
+            (board as any)._doc.sections = sections;
             sendResponse({ res, message: 'board retrived successful.', data: board })
         } catch (error) {
-            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.badRequest })
+            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
         }
     }
     async getBoards(req: Request, res: Response) {
@@ -53,7 +63,7 @@ class BoardController {
             const boards = await Board.find().sort('position');
             sendResponse({ res, message: "successful", data: boards })
         } catch (error) {
-            sendResponse({ res, statusCode: StatusCode.serverError, error: error })
+            sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
     async updatePosition(req: Request, res: Response) {
@@ -68,7 +78,7 @@ class BoardController {
             }
             sendResponse({ res, message: "updated successfully", data: '' })
         } catch (error) {
-            sendResponse({ res, statusCode: StatusCode.serverError, error: error })
+            sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
 }

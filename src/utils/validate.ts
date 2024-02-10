@@ -10,7 +10,7 @@ const validate = (req: Request, res: Response, next: NextFunction) => {
             acc[(error as any).path] = error.msg;
             return acc;
         });
-        res.status(StatusCode.error).json({
+        res.status(StatusCode.BAD_REQUEST).json({
             errors: formattedErrors
         })
         return;

@@ -9,34 +9,31 @@ class AuthMiddleware {
         try {
             let token = req.headers.authorization?.split(" ")[1];
             if (!token) {
-                res.status(StatusCode.unAuthenticated).json({
-                    status: StatusCode.unAuthenticated,
-                    message: "unauthenticated request token not found."
+                return res.status(StatusCode.UNAUTHORIZED).json({
+                    status: StatusCode.UNAUTHORIZED,
+                    message: "UNAUTHORIZED request token not found."
                 });
-                return;
             }
 
             const decoded = jwt.verify(token, AppCredentials.JWT_SECRET) as JwtPayload;
             if (!decoded || !decoded.username) {
-                res.status(StatusCode.unAuthenticated).json({
-                    status: StatusCode.unAuthenticated,
-                    message: "unauthenticated request."
+                return res.status(StatusCode.UNAUTHORIZED).json({
+                    status: StatusCode.UNAUTHORIZED,
+                    message: "UNAUTHORIZED request."
                 });
-                return;
             }
             const user = await User.find({username:decoded.username});
             if (!user) {
-                res.status(StatusCode.unAuthenticated).json({
-                    status: StatusCode.unAuthenticated,
+                return res.status(StatusCode.UNAUTHORIZED).json({
+                    status: StatusCode.UNAUTHORIZED,
                     message: "user not found request."
                 });
-                return;
             }
             
             next();
         } catch (err) {
-            res.status(StatusCode.unAuthenticated).json({
-                status: StatusCode.unAuthenticated,
+            return res.status(StatusCode.UNAUTHORIZED).json({
+                status: StatusCode.UNAUTHORIZED,
                 message: "invalid token."
             });
         }
