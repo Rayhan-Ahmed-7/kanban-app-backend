@@ -15,10 +15,17 @@ class BoardRoutes {
         this.router.get('/get-board/:boardId', param('boardId').custom(value => {
             if (!isObjectId(value)) {
                 return Promise.reject('invalid id');
-            }else{
+            } else {
                 return Promise.resolve()
             }
-        }), validate,authMiddleware.authenticate, this.controller.getBoard)
+        }), validate, authMiddleware.authenticate, this.controller.getBoard)
+        this.router.put('/update-board/:boardId', param('boardId').custom(value => {
+            if (!isObjectId(value)) {
+                return Promise.reject('invalid id');
+            } else {
+                return Promise.resolve()
+            }
+        }), validate, authMiddleware.authenticate, this.controller.updateBoard)
         this.router.get('/get-boards', authMiddleware.authenticate, this.controller.getBoards)
         this.router.put('/update-boards', authMiddleware.authenticate, this.controller.updatePosition)
     }

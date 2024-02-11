@@ -7,13 +7,13 @@ class UserController{
         try {
             const users = await User.find().select({username:1,_id:1});
 
-            res.status(StatusCode.OK).json({
+            return res.status(StatusCode.OK).json({
                 message: "user  list rettrived.",
                 data: users
             });
 
         } catch (err) {
-            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
                 message: "failed to load user list",
                 data: null,
                 error: err

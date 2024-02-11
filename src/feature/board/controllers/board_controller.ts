@@ -24,9 +24,9 @@ class BoardController {
                 title: `title ${index}`,
                 position: index
             });
-            sendResponse({ res, message: 'board creation successful.', data: board })
+            return sendResponse({ res, message: 'board creation successful.', data: board })
         } catch (error) {
-            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
+            return sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
         }
     }
     async getBoard(req: Request, res: Response) {
@@ -45,7 +45,7 @@ class BoardController {
                 _id: boardId
             });
             if (!board) {
-                sendResponse({ res, message: 'board not found', statusCode: StatusCode.BAD_REQUEST, error: {} })
+                return sendResponse({ res, message: 'board not found', statusCode: StatusCode.BAD_REQUEST, error: { board } })
             }
             const sections = await Section.find({ board: boardId });
             for (const section of sections) {
@@ -53,17 +53,81 @@ class BoardController {
                 (section as any)._doc.tasks = tasks;
             }
             (board as any)._doc.sections = sections;
-            sendResponse({ res, message: 'board retrived successful.', data: board })
+            return sendResponse({ res, message: 'board retrived successful.', data: board })
         } catch (error) {
-            sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
+            return sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
+        }
+    }
+    async updateBoard(req: Request, res: Response) {
+        try {
+            const { boardId } = req.params;
+            const { title, description, favourite } = req.body;
+
+            if (title == '') req.body.title = 'Untitled';
+            if (description == '') req.body.description = 'Add description here'
+
+            const board = await Board.findById(boardId);
+            if (!board) {
+                return sendResponse({ res, message: 'board not found', statusCode: StatusCode.BAD_REQUEST, error: { board } })
+            }
+            if (favourite !== undefined && board.favourite !== favourite) {
+                const favourites = await Board.find({
+                    user: board.user,
+                    favourite: true,
+                    _id: { $ne: boardId }
+                }).sort('favouritePosition')
+                if (favourite) {
+                    req.body.favouritePosition = favourites.length > 0 ? favourites.length : 0
+                } else {
+                    for (const key in favourites) {
+                        const element = favourites[key]
+                        await Board.findByIdAndUpdate(
+                            element.id,
+                            { $set: { favouritePosition: key } }
+                        )
+                    }
+                }
+            }
+            const updatedBoard = await Board.findByIdAndUpdate(
+                boardId,
+                { $set: req.body },
+                { new: true }
+            )
+            return sendResponse({ res, message: 'board retrived successful.', data: updatedBoard })
+        } catch (error) {
+            return sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
         }
     }
     async getBoards(req: Request, res: Response) {
         try {
-            const boards = await Board.find().sort('position');
-            sendResponse({ res, message: "successful", data: boards })
+            const token = req.headers.authorization?.split(" ")[1];
+            if (!token) {
+                return res.status(StatusCode.UNAUTHORIZED).json({
+                    message: "token not found."
+                })
+            }
+            const decoded = jwt.decode(token) as JwtPayload;
+            const userId = decoded.userId;
+            const boards = await Board.find({ user: userId, }).sort('position');
+            return sendResponse({ res, message: "successful", data: boards })
         } catch (error) {
-            sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
+            return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
+        }
+    }
+    async getFavouriteBoards(req: Request, res: Response) {
+        try {
+            const token = req.headers.authorization?.split(" ")[1];
+            if (!token) {
+                return res.status(StatusCode.UNAUTHORIZED).json({
+                    message: "token not found."
+                })
+            }
+            const decoded = jwt.decode(token) as JwtPayload;
+            const userId = decoded.userId;
+            const boards = await Board.find({ user: userId, favourite: true }).sort('favouritePosition');
+            return sendResponse({ res, message: "successful", data: boards })
+        } catch (error) {
+            return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
     async updatePosition(req: Request, res: Response) {
@@ -76,9 +140,9 @@ class BoardController {
                     { $set: { position: key, } }
                 )
             }
-            sendResponse({ res, message: "updated successfully", data: '' })
+            return sendResponse({ res, message: "updated successfully", data: '' })
         } catch (error) {
-            sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
+            return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
 }

@@ -14,12 +14,10 @@ export const sendResponse = ({ res, message, statusCode = 200, data, error }: IR
             message: message,
             data: data,
         })
-        return;
     } else {
         res.status(statusCode).json({
             message: message,
             error: error
         })
-        return;
     }
 }
