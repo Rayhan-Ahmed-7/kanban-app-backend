@@ -1,14 +1,14 @@
 import { Schema, model } from "mongoose";
 
 const sectionSchema = new Schema({
-    user: {
+    board: {
         type: Schema.Types.ObjectId,
         ref: "Board",
         required: true,
     },
     title: {
         type: String,
-        defautl: ''
+        defautl: 'Untitled'
     }
 })
 

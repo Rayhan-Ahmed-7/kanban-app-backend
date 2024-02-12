@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const taskSchema = new Schema({
-    user: {
+    section: {
         type: Schema.Types.ObjectId,
         ref: "Section",
         required: true,
