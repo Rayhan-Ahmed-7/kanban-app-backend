@@ -26,6 +26,8 @@ class BoardRoutes {
                 return Promise.resolve()
             }
         }), validate, authMiddleware.authenticate, this.controller.updateBoard)
+        this.router.get('/get-favourite-boards', authMiddleware.authenticate, this.controller.getFavouriteBoards)
+        this.router.put('/update-favourite-boards', authMiddleware.authenticate, this.controller.updateFavouritePosition)
         this.router.get('/get-boards', authMiddleware.authenticate, this.controller.getBoards)
         this.router.put('/update-boards', authMiddleware.authenticate, this.controller.updatePosition)
     }

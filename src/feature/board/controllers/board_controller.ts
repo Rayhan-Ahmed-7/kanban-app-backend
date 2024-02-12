@@ -114,6 +114,21 @@ class BoardController {
             return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
+    async updatePosition(req: Request, res: Response) {
+        try {
+            const { boards } = req.body;
+            for (const key in boards) {
+                const board = boards[key];
+                await Board.findByIdAndUpdate(
+                    board.id,
+                    { $set: { position: key, } }
+                )
+            }
+            return sendResponse({ res, message: "updated successfully", data: '' })
+        } catch (error) {
+            return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
+        }
+    }
     async getFavouriteBoards(req: Request, res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
@@ -130,14 +145,14 @@ class BoardController {
             return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
-    async updatePosition(req: Request, res: Response) {
+    async updateFavouritePosition(req: Request, res: Response) {
         try {
             const { boards } = req.body;
             for (const key in boards) {
                 const board = boards[key];
                 await Board.findByIdAndUpdate(
                     board.id,
-                    { $set: { position: key, } }
+                    { $set: { favouritePosition: key, } }
                 )
             }
             return sendResponse({ res, message: "updated successfully", data: '' })
@@ -145,6 +160,7 @@ class BoardController {
             return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
+
 }
 
 
