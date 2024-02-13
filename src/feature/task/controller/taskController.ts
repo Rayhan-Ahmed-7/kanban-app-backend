@@ -6,7 +6,7 @@ import { StatusCode } from "../../../types/util";
 class TaskController {
     async create(req: Request, res: Response) {
         try {
-            const { sectionId } = req.body;
+            const { sectionId } = req.params;
             const tasksCount = await Task.find({ section: sectionId }).countDocuments();
             let task = await Task.create({
                 section: sectionId,
@@ -19,7 +19,7 @@ class TaskController {
     }
     async update(req: Request, res: Response) {
         try {
-            const { taskId } = req.body;
+            const { taskId } = req.params;
             const task = await Task.findByIdAndUpdate(
                 taskId,
                 { $set: req.body }
@@ -31,7 +31,7 @@ class TaskController {
     }
     async delete(req: Request, res: Response) {
         try {
-            const { taskId } = req.body;
+            const { taskId } = req.params;
             const currentTask = await Task.findById(taskId);
             const task = await Task.deleteOne(
                 { _id: taskId }

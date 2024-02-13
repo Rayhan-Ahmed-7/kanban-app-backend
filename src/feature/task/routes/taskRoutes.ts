@@ -15,7 +15,7 @@ class TaskRoutes {
         this.router.post(
             '/create/:sectionId',
             param('sectionId').custom(value => {
-                if (isObjectId(value)) {
+                if (!isObjectId(value)) {
                     return Promise.reject("Section id is invalid.")
                 } else {
                     return Promise.resolve();
@@ -28,7 +28,7 @@ class TaskRoutes {
         this.router.put(
             '/update/:taskId',
             param('taskId').custom(value => {
-                if (isObjectId(value)) {
+                if (!isObjectId(value)) {
                     return Promise.reject("Task id is invalid.")
                 } else {
                     return Promise.resolve();
@@ -41,7 +41,7 @@ class TaskRoutes {
         this.router.put(
             '/update-position/:taskId',
             param('taskId').custom(value => {
-                if (isObjectId(value)) {
+                if (!isObjectId(value)) {
                     return Promise.reject("Task id is invalid.")
                 } else {
                     return Promise.resolve();
@@ -54,7 +54,7 @@ class TaskRoutes {
         this.router.delete(
             '/delete/:taskId',
             param('taskId').custom(value => {
-                if (isObjectId(value)) {
+                if (!isObjectId(value)) {
                     return Promise.reject("Task id is invalid.")
                 } else {
                     return Promise.resolve();
