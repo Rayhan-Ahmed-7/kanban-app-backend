@@ -1,5 +1,10 @@
 import { Schema, model } from "mongoose";
 
+interface SectionDoc extends Document {
+    board: Schema.Types.ObjectId;
+    title: string;
+}
+
 const sectionSchema = new Schema({
     board: {
         type: Schema.Types.ObjectId,
@@ -12,6 +17,6 @@ const sectionSchema = new Schema({
     }
 })
 
-const Section = model("Section", sectionSchema);
+const Section = model<SectionDoc>("Section", sectionSchema);
 
 export default Section;

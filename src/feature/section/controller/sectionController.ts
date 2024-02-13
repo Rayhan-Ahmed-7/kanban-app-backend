@@ -8,7 +8,7 @@ class SectionController {
     async create(req: Request, res: Response) {
         try {
             const { boardId } = req.params;
-            const section = await Section.create({ board: boardId });
+            const section = await Section.create({ board: boardId, title: 'Untitled' });
             (section as any)._doc.tasks = [];
             return sendResponse({
                 res,
