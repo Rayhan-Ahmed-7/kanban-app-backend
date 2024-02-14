@@ -39,15 +39,7 @@ class TaskRoutes {
             this.controller.update
         )
         this.router.put(
-            '/update-position/:taskId',
-            param('taskId').custom(value => {
-                if (!isObjectId(value)) {
-                    return Promise.reject("Task id is invalid.")
-                } else {
-                    return Promise.resolve();
-                }
-            }),
-            validate,
+            '/update-position',
             authMiddleware.authenticate,
             this.controller.updatePositon
         )

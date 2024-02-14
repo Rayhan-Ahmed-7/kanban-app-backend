@@ -8,7 +8,7 @@ const taskSchema = new Schema({
     },
     title: {
         type: String,
-        defautl: ''
+        default: 'Untitled'
     },
     content: {
         type: String,

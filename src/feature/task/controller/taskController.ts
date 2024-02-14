@@ -60,10 +60,11 @@ class TaskController {
                 resourceSectionId,
                 destinationSectionId
             } = req.body;
+            // console.log(resourceList,destinationList,resourceSectionId,destinationSectionId)
             if (resourceSectionId !== destinationSectionId) {
                 for (const key in resourceList) {
                     await Task.findByIdAndUpdate(
-                        resourceList[key].id,
+                        resourceList[key]._id,
                         {
                             $set: {
                                 section: resourceSectionId,
@@ -74,8 +75,8 @@ class TaskController {
                 }
             }
             for (const key in destinationList) {
-                await Task.findById(
-                    destinationList[key].id,
+                await Task.findByIdAndUpdate(
+                    destinationList[key]._id,
                     {
                         $set: {
                             section: destinationSectionId,
@@ -84,9 +85,10 @@ class TaskController {
                     }
                 )
             }
-            sendResponse({ res, message: "Updated", statusCode: StatusCode.INTERNAL_SERVER_ERROR, data: {} })
+            sendResponse({ res, message: "Updated", statusCode: StatusCode.OK, data: {} })
         } catch (error) {
-            return sendResponse({ res, message: "successful", statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
+            console.log(error);
+            return sendResponse({ res, message: "error", statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
         }
     }
 }
