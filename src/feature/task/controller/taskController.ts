@@ -2,16 +2,19 @@ import { Request, Response } from "express";
 import Task from "../models/task_model";
 import { sendResponse } from "../../../helper/global_response";
 import { StatusCode } from "../../../types/util";
+import Section from "../../section/model/section_model";
 
 class TaskController {
     async create(req: Request, res: Response) {
         try {
             const { sectionId } = req.params;
+            const section = await Section.findById(sectionId)
             const tasksCount = await Task.find({ section: sectionId }).countDocuments();
             let task = await Task.create({
                 section: sectionId,
                 position: tasksCount > 0 ? tasksCount : 0
             });
+            (task as any)._doc.section = section
             return sendResponse({ res, message: "successful", statusCode: StatusCode.OK, data: task })
         } catch (error) {
             return sendResponse({ res, statusCode: StatusCode.INTERNAL_SERVER_ERROR, error: error })
