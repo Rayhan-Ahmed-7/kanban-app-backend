@@ -12,6 +12,13 @@ class BoardRoutes {
     }
     initializeRoutes() {
         this.router.post('/create-board', authMiddleware.authenticate, this.controller.createBoard)
+        this.router.get('/delete/:boardId', param('boardId').custom(value => {
+            if (!isObjectId(value)) {
+                return Promise.reject('invalid board id');
+            } else {
+                return Promise.resolve()
+            }
+        }), validate, authMiddleware.authenticate, this.controller.deleteBoard)
         this.router.get('/get-board/:boardId', param('boardId').custom(value => {
             if (!isObjectId(value)) {
                 return Promise.reject('invalid id');

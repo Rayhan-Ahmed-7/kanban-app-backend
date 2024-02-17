@@ -16,7 +16,7 @@ const sectionSchema = new Schema({
         defautl: 'Untitled'
     }
 })
-
+  
 const Section = model<SectionDoc>("Section", sectionSchema);
 
 export default Section;

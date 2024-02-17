@@ -29,6 +29,23 @@ class BoardController {
             return sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
         }
     }
+    async deleteBoard(req: Request, res: Response) {
+        try {
+            const { boardId } = req.params;
+            let sections = await Section.find(
+                { board: boardId }
+            ).select("_id");
+            let sectionIds = sections.map(s => s._id);
+            await Task.deleteMany({ section: { $in: sectionIds } });
+            await Section.deleteMany({ board: boardId })
+            await Board.deleteOne({
+                _id: boardId,
+            });
+            return sendResponse({ res, message: 'board deleted.', data: {} })
+        } catch (error) {
+            return sendResponse({ res, message: 'error', error: error, statusCode: StatusCode.BAD_REQUEST })
+        }
+    }
     async getBoard(req: Request, res: Response) {
         try {
             const { boardId } = req.params;
