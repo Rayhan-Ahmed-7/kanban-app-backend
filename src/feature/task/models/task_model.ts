@@ -1,23 +1,26 @@
 import { Schema, model } from "mongoose";
 
-const taskSchema = new Schema({
+const taskSchema = new Schema(
+  {
     section: {
-        type: Schema.Types.ObjectId,
-        ref: "Section",
-        required: true,
+      type: Schema.Types.ObjectId,
+      ref: "Section",
+      required: true,
     },
     title: {
-        type: String,
-        default: 'Untitled'
+      type: String,
+      default: "Untitled",
     },
     content: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
     position: {
-        type: Number
-    }
-})
+      type: Number,
+    },
+  },
+  { timestamps: true }
+);
 
 const Task = model("Task", taskSchema);
 
