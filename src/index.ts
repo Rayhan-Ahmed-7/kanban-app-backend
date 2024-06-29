@@ -20,4 +20,4 @@ app
       console.log(err);
     }
   });
-export default app;
+module.exports = app;
