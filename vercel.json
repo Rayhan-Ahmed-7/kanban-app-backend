@@ -11,5 +11,11 @@
       "src": "/(.*)",
       "dest": "/dist"
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/dist"
+    }
   ]
 }
