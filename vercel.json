@@ -12,11 +12,5 @@
       "source": "/(.*)",
       "destination": "/dist"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/dist"
-    }
   ]
 }
