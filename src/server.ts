@@ -12,7 +12,11 @@ class Server {
 
   private config(app: Application): void {
     const corsOptions: CorsOptions = {
-      origin: ["http://localhost:5173", "http://192.168.10.183:5173"],
+      origin: [
+        "http://localhost:5173",
+        "http://192.168.10.183:5173",
+        "https://taskflow-kappa.vercel.app",
+      ],
       credentials: true,
     };
 
